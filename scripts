@@ -9,7 +9,7 @@ function drun() {
 }
 
 function run() {
-    poetry run ecco $@
+    poetry run beanie $@
 }
 
 function install() {

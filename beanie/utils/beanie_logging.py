@@ -12,13 +12,13 @@ ERROR_YELLOW = ANSI_YELLOW + ANSI_BOLD
 
 
 def setup_tracebacks() -> None:
-    from ..ecco import DEBUG
+    from ..beanie import DEBUG
 
-    if DEBUG:
+    if not DEBUG:
         sys.tracebacklimit = 0
 
 
-class EccoFatalException(Exception):
+class BeanieFatalException(Exception):
     return_code = 1
 
     def __init__(self, category_string: str = "FATAL", *args):
@@ -48,7 +48,7 @@ class EccoFatalException(Exception):
         # super().__init__(self.message)
 
 
-class EccoFileNotFound(EccoFatalException):
+class BeanieFileNotFound(BeanieFatalException):
     return_code = 2
 
     def __init__(self, filename: str):
@@ -60,7 +60,7 @@ class EccoFileNotFound(EccoFatalException):
         super().__init__("FILE ERROR", f'File "{filename}" not found')
 
 
-class EccoSyntaxError(EccoFatalException):
+class BeanieSyntaxError(BeanieFatalException):
     return_code = 3
 
     def __init__(self, message: str):

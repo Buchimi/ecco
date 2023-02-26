@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "ecco"
+name = "beanie"
 version = "0.1.0"
-description = "An Educational C COmpiler written in Python"
-authors = ["Charles Averill <charlesaverill20@gmail.com>"]
+description = "The beanie lang"
+authors = ["Michael Ugochukwu, Charles Averill <charlesaverill20@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -19,4 +19,5 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
+beanie = "beanie.beanie:main"
 ecco = "ecco.ecco:main"

@@ -14,6 +14,9 @@ class TokenType(Enum):
     # Literals
     INTEGER_LITERAL = "integer literal"
 
+    # End of file
+    EOF = "EOF"
+    
     def __str__(self) -> str:
         return self.value
 
@@ -31,6 +34,7 @@ class Token:
         """
         self.type: TokenType = _type
         self.value: int = _value
+
 
     def __repr__(self):
         return f"Token:\n\tTYPE = [{str(self.type)}] ({int(self.type)})" + (

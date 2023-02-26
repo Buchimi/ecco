@@ -1,10 +1,10 @@
 FROM python:3.10-alpine
 
-WORKDIR /app/ecco
+WORKDIR /app/beanie
 RUN apk add gcc clang lld musl-dev compiler-rt libffi-dev
 RUN pip install poetry
-ADD . /app/ecco
+ADD . /app/beanie
 
 RUN poetry install
 
-ENTRYPOINT ["poetry", "run", "ecco"]
+ENTRYPOINT ["poetry", "run", "beanie"]
