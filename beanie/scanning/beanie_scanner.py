@@ -91,7 +91,9 @@ class Scanner:
         Args:
             c (str): Character to put back into the input stream
         """
-        if len(c) != 1:
+        
+        if len(c) > 1:
+
             raise TypeError(
                 f"put_back() expected a character, but string of length {len(c)} found"
             )
@@ -159,5 +161,5 @@ class Scanner:
     def scan_file(self) -> None:
         """Scans a file and prints out its Tokens"""
 
-        while self.scan():
+        while self.scan().type != TokenType.EOF:
             print(self.current_token)

@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class TokenType(Enum):
-
+    """ Enum to keep track of the type of token """
     UNKNOWN_TOKEN = "unknown token"
 
     # Operators

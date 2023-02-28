@@ -1,7 +1,6 @@
 from .scanning import Scanner, TokenType
 from .utils import get_args, setup_tracebacks, BeanieFatalException
 
-from .beanie_ast import ASTNode
 
 DEBUG = True
 GLOBAL_SCANNER: Scanner
@@ -16,13 +15,15 @@ def main():
     GLOBAL_SCANNER.open()
     setup_tracebacks()
 
-    GLOBAL_SCANNER.scan()
+    #GLOBAL_SCANNER.scan()
 
     from .parsing import (
-        parse_binary_expression
+        parse_binary_expression,
+        ASTNode
     )
-
-    parsed_ast = parse_binary_expression()
+    GLOBAL_SCANNER.scan_file()
+    
+    #parsed_ast = parse_binary_expression(0)
 
     def interpret_ast(root: ASTNode):
         left_value: int
@@ -47,7 +48,7 @@ def main():
             raise BeanieFatalException(
                 "FATAL", f'Unknown Token "{str(root.token.type)}" encountered'
             )
-    print(interpret_ast(parsed_ast))
+    #print(interpret_ast(parsed_ast))
     GLOBAL_SCANNER.close()
 
 
