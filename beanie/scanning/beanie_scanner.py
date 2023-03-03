@@ -41,7 +41,8 @@ class Scanner:
 
     def __exit__(self, _, __, ___):
         """Closes the program file"""
-        self.file.close()
+        if not self.file.closed:
+            self.file.close()
 
     def open(self):
         self.__enter__()
@@ -91,7 +92,7 @@ class Scanner:
         Args:
             c (str): Character to put back into the input stream
         """
-        
+
         if len(c) > 1:
 
             raise TypeError(
@@ -148,7 +149,7 @@ class Scanner:
                 self.current_token.type = TokenType.INTEGER_LITERAL
                 self.current_token.value = self.scan_integer_literal(c)
             else:
-                raise BeanieSyntaxError(f'Uncrecognized token "{c}"')
+                raise BeanieSyntaxError(f'Unrecognized token "{c}"')
         else:
             if len(c) == 1:
                 self.current_token.type = possible_token_types[0]

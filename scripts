@@ -10,8 +10,13 @@ function drun() {
 
 function run() {
     poetry run beanie $@
+
 }
 
+function test1(){
+    poetry run beanie examples/test1
+    clang test1.ll -o results/test1 && ./results/test1
+}
 function install() {
     pip install .
 }
@@ -43,6 +48,10 @@ case $1 in
         drun $@
     ;;
 
+    test1)
+        echo "Running test 1"
+        test1   
+    ;;
     run)
         echo "-----RUN-----"
         run ${@:2}
