@@ -1,7 +1,7 @@
 from .scanning import Scanner, Token, TokenType
 from .utils import (
     arguments, BeanieFatalException, BeanieFileNotFound, BeanieSyntaxError,
-    beanie_logging
+    beanie_logging, 
 )
 
 

@@ -1,7 +1,7 @@
 from typing import Dict
 
 from ..scanning import Token, TokenType
-from ..utils import BeanieSyntaxError
+from ..utils import BeanieSyntaxError, BeanieEOFMissingSemicolonError
 from ..beanie import GLOBAL_SCANNER
 from .beanie_ast import ASTNode, create_ast_leaf
 
@@ -20,6 +20,8 @@ def parse_terminal_node() -> ASTNode:
         print(GLOBAL_SCANNER.current_token)
         GLOBAL_SCANNER.scan()
         return out
+    elif GLOBAL_SCANNER.current_token.type == TokenType.EOF:
+        raise BeanieEOFMissingSemicolonError()
     else:
         raise BeanieSyntaxError(
             f'Expected terminal Token but got "{str(GLOBAL_SCANNER.current_token.type)}"'
@@ -50,17 +52,17 @@ def parse_binary_expression(previous_token_precedence: int) -> ASTNode:
     # Get an integer literal, and scan the next token into GLOBAL_SCANNER.current_token
     left = parse_terminal_node()
 
+    # reached end of statement
     node_type = GLOBAL_SCANNER.current_token.type
-    # EOF
-    if GLOBAL_SCANNER.current_token.type == TokenType.EOF:
+    if node_type == TokenType.SEMICOLON:
         # if we hit the ned of file
         return left
+    elif node_type == TokenType.EOF:
+        raise BeanieEOFMissingSemicolonError
 
     # If we haven't reached EOF, we're looking at an operator (hopefully)
     # We want to store this value so we can make an AST operator node
     # with integer literals (or sub-expressions) as children
-
-    
 
     while err_check_precedence(node_type) > previous_token_precedence:
 
@@ -74,7 +76,9 @@ def parse_binary_expression(previous_token_precedence: int) -> ASTNode:
 
         # Update node_type and check for EOF
         node_type = GLOBAL_SCANNER.current_token.type
-        if node_type == TokenType.EOF:
+        if node_type == TokenType.SEMICOLON:
             break
+        elif node_type == TokenType.EOF:
+            raise BeanieEOFMissingSemicolonError
 
     return left

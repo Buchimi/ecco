@@ -24,8 +24,7 @@ def main():
     from .parsing import (parse_binary_expression)
     from .generation import generate_llvm
 
-    parsed_ast = parse_binary_expression(0)
-    generate_llvm(parsed_ast)
+    generate_llvm()
     # print(interpret_ast(parsed_ast))
     GLOBAL_SCANNER.close()
 

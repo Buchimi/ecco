@@ -4,6 +4,8 @@ from .beanie_logging import (
     BeanieFileError,
     BeanieFileNotFound,
     BeanieInternalTypeError,
+    BeanieEOFMissingSemicolonError,
+    BeanieIdentifierError,
     log,
     LogLevel,
     setup_tracebacks,
@@ -16,5 +18,7 @@ __all__ = ["get_args",
            "BeanieSyntaxError",
            "BeanieFileError",
            "BeanieInternalTypeError",
+           "BeanieEOFMissingSemicolonError",
+           "BeanieIdentifierError"
            "log",
            "LogLevel"]

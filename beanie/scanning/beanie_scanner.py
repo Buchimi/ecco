@@ -1,7 +1,7 @@
-from typing import TextIO, List
+from typing import TextIO
 import os
 
-from ..utils.beanie_logging import BeanieFileNotFound, BeanieSyntaxError
+from ..utils.beanie_logging import BeanieFileNotFound, BeanieSyntaxError, BeanieIdentifierError
 from .beanie_token import Token, TokenType
 
 
@@ -18,6 +18,7 @@ class Scanner:
         self.put_back_buffer: str = ""
 
         self.line_number: int = 1
+        self.char_number: int = 1
 
         self.current_token: Token
 
@@ -70,8 +71,10 @@ class Scanner:
         # the open input file, and conditionally
         # increment our rudimentary line counter
         c = self.file.read(1)
+        self.char_number += 1
         if c == "\n":
             self.line_number += 1
+            self.char_number = 1
 
         return c
 
@@ -120,6 +123,28 @@ class Scanner:
 
         return int(in_string)
 
+    def scan_identifier(self, c: str) -> str:
+        """Scan identifier strings into a buffer
+        Args:
+            c (str): Current character from input stream
+        Raises:
+            EccoIdentifierError: If identifier is too long
+        Returns:
+            str: Scanned identifier buffer
+        """
+        identifier = ""
+
+        while c.isalnum() or c == "_":
+            identifier += c
+            c = self.next_character()
+
+            # I've picked an arbitrary limit for identifier length,
+            # although other implementations of C have larger limits
+            if len(identifier) >= 512:
+                raise BeanieIdentifierError("Identifier is too long!")
+        self.put_back(c)
+        return identifier
+
     def scan(self) -> Token:
         """Scan the next token
 
@@ -139,23 +164,25 @@ class Scanner:
             self.current_token.type = TokenType.EOF
             return self.current_token
 
-        possible_token_types: List[TokenType] = []
-        for token_type in TokenType:
-            if str(token_type)[0] == c:
-                possible_token_types.append(token_type)
+        possible_token_type = TokenType.from_string(c)
 
-        if not len(possible_token_types):
+        if possible_token_type == TokenType.UNKNOWN_TOKEN:
             if c.isdigit():
                 self.current_token.type = TokenType.INTEGER_LITERAL
                 self.current_token.value = self.scan_integer_literal(c)
+            elif c.isalpha() or c == "_":
+                scanned_identifier: str = self.scan_identifier(c)
+                if scanned_identifier in TokenType.string_values():
+                    self.current_token.type = TokenType.from_string(
+                        scanned_identifier)
+                else:
+                    raise BeanieSyntaxError(
+                        f'Unrecognized identifier "{scanned_identifier}"'
+                    )
             else:
                 raise BeanieSyntaxError(f'Unrecognized token "{c}"')
         else:
-            if len(c) == 1:
-                self.current_token.type = possible_token_types[0]
-                return self.current_token
-            else:
-                pass
+            self.current_token.type = possible_token_type
 
         return self.current_token
 
